@@ -73,6 +73,14 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://convert2md.com");
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
     
+    <script>
+      (function() {
+        var stored = localStorage.getItem('theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     <style>
       body {
         font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
@@ -80,6 +88,10 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://convert2md.com");
       code, pre, .font-mono {
         font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
       }
+      .dark #dark-mode-icon-sun { display: block !important; }
+      .dark #dark-mode-icon-moon { display: none !important; }
+      :root:not(.dark) #dark-mode-icon-sun { display: none !important; }
+      :root:not(.dark) #dark-mode-icon-moon { display: block !important; }
     </style>
   </head>
   <body class="min-h-screen bg-canvas-soft text-ink flex flex-col antialiased selection:bg-primary selection:text-canvas">
@@ -128,11 +140,11 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://convert2md.com");
           <!-- Dark Mode Toggle -->
           <button 
             id="dark-mode-toggle"
-            class="h-8 w-8 sm:h-9 sm:w-9 rounded-full border border-hairline bg-canvas hover:bg-canvas-soft-2 flex items-center justify-center text-mute hover:text-primary transition-colors shrink-0"
+            class="h-8 w-8 sm:h-9 sm:w-9 rounded-full border border-hairline bg-canvas hover:bg-canvas-soft-2 flex items-center justify-center text-mute hover:text-primary transition-colors shrink-0 relative"
             aria-label="Toggle dark mode"
             title="Toggle dark mode"
           >
-            <svg id="dark-mode-icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4 hidden">
+            <svg id="dark-mode-icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
             </svg>
             <svg id="dark-mode-icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4">
@@ -254,33 +266,26 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://convert2md.com");
       (function() {
         const html = document.documentElement;
         const toggle = document.getElementById('dark-mode-toggle');
-        const iconSun = document.getElementById('dark-mode-icon-sun');
-        const iconMoon = document.getElementById('dark-mode-icon-moon');
         const menuToggle = document.getElementById('mobile-menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         const menuOpen = document.getElementById('menu-icon-open');
         const menuClose = document.getElementById('menu-icon-close');
-
-        // Restore dark mode preference
-        const stored = localStorage.getItem('theme');
-        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          html.classList.add('dark');
-          if (iconSun) iconSun.classList.remove('hidden');
-          if (iconMoon) iconMoon.classList.add('hidden');
-        } else {
-          if (iconSun) iconSun.classList.add('hidden');
-          if (iconMoon) iconMoon.classList.remove('hidden');
-        }
 
         // Dark mode toggle
         if (toggle) {
           toggle.addEventListener('click', function() {
             const isDark = html.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            if (iconSun) iconSun.classList.toggle('hidden', !isDark);
-            if (iconMoon) iconMoon.classList.toggle('hidden', isDark);
           });
         }
+
+        // Listen for OS theme changes
+        const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+        darkModeMedia.addEventListener('change', function(e) {
+          if (!localStorage.getItem('theme')) {
+            html.classList.toggle('dark', e.matches);
+          }
+        });
 
         // Mobile menu toggle
         if (menuToggle && mobileMenu) {
@@ -291,7 +296,6 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://convert2md.com");
             if (menuClose) menuClose.classList.toggle('hidden', expanded);
           });
 
-          // Close menu on link click
           mobileMenu.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', function() {
               mobileMenu.classList.add('hidden');
