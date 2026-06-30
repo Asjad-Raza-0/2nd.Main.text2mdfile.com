@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout activeTab="about" title="About & Technology | Private Markdown Converters - convert2md.com" description="Learn how convert2md.com extracts Markdown from PDF files locally. Read about our zero-upload privacy architecture and PDF.js engine.">
+  <section class="max-w-4xl mx-auto px-6 py-16 relative z-10">
+    <div class="mb-12">
+      <h1 class="font-geist text-4xl md:text-5xl font-semibold tracking-tight text-primary mb-4 text-balance">
+        about convert2md
+      </h1>
+      <p class="text-base text-body leading-relaxed max-w-2xl text-pretty">
+        convert2md is a security-first, high-performance web utility built for developers, writers, and compliance officers who need to convert documents to Markdown without leaking sensitive data to third-party cloud servers.
+      </p>
+    </div>
+
+    <!-- The Problem & Solution Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      <div class="bg-canvas border border-hairline p-6 rounded-xl shadow-xs">
+        <h2 class="text-lg font-semibold text-primary mb-3">The Problem</h2>
+        <p class="text-sm text-body leading-relaxed">
+          Traditional online conversion sites (like Zamzar or CloudConvert) require you to upload your PDF, doc, or text files to their cloud servers. 
+          For corporate reports, code files, or medical records, this presents major security and compliance risks. Furthermore, these platforms throttle your usage, showing annoying advertisements and requiring premium payment subscriptions.
+        </p>
+      </div>
+
+      <div class="bg-canvas border border-hairline p-6 rounded-xl shadow-xs">
+        <h2 class="text-lg font-semibold text-primary mb-3">The convert2md Way</h2>
+        <p class="text-sm text-body leading-relaxed">
+          We built convert2md to run <strong>entirely client-side</strong>. By using modern web features like WebAssembly and client JavaScript parsing frameworks (such as PDF.js and Turndown), your files never leave your device. 
+          Your computer does all the heavy lifting, delivering instant conversions with 100% data security.
+        </p>
+      </div>
+    </div>
+
+    <!-- Under the Hood Tech Stack -->
+    <div class="space-y-6 mb-16">
+      <h2 class="font-geist text-2xl font-semibold tracking-tight text-primary">
+        under the hood.
+      </h2>
+      <p class="text-sm text-body leading-relaxed">
+        Our architecture relies on lightweight, robust parsing engines that compile content structure in real-time inside your browser:
+      </p>
+      
+      <div class="border border-hairline rounded-xl overflow-hidden bg-canvas">
+        <div class="p-4 border-b border-hairline bg-canvas-soft flex items-center justify-between">
+          <span class="text-xs font-mono font-semibold uppercase text-mute">Library</span>
+          <span class="text-xs font-mono font-semibold uppercase text-mute">Role in Web App</span>
+        </div>
+        <div class="divide-y divide-hairline">
+          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="font-semibold text-sm text-primary">Mozilla PDF.js</span>
+              <p class="text-xs text-body">Spatial text layer extractor & coordinates reader</p>
+            </div>
+            <span class="text-xs font-mono bg-canvas-soft-2 border border-hairline rounded px-2 py-0.5 text-mute">Client-Side Parser</span>
+          </div>
+          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="font-semibold text-sm text-primary">Turndown</span>
+              <p class="text-xs text-body">Pasted visual content & HTML source compiler</p>
+            </div>
+            <span class="text-xs font-mono bg-canvas-soft-2 border border-hairline rounded px-2 py-0.5 text-mute">Compiled locally via Vite</span>
+          </div>
+          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="font-semibold text-sm text-primary">Marked.js</span>
+              <p class="text-xs text-body">High-fidelity Markdown editor to HTML preview renderer</p>
+            </div>
+            <span class="text-xs font-mono bg-canvas-soft-2 border border-hairline rounded px-2 py-0.5 text-mute">CDN Cached</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="space-y-6">
+      <h2 class="font-geist text-2xl font-semibold tracking-tight text-primary">
+        frequently asked questions.
+      </h2>
+      
+      <div class="space-y-6">
+        <div>
+          <h3 class="text-base font-semibold text-primary mb-2">Are my files really secure here?</h3>
+          <p class="text-sm text-body leading-relaxed">
+            Yes, completely. Because our application works entirely client-side, the files you upload or text you paste are read inside your local browser memory space. No document or data packets are sent over the network. You can even load this website, turn off your internet, and continue converting files.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-base font-semibold text-primary mb-2">Why is the output empty for some scanned PDFs?</h3>
+          <p class="text-sm text-body leading-relaxed">
+            This tool reads the **vector text layer** of PDF files. If a PDF is a scanned picture or image without digital text selection metadata, standard browser parsing cannot extract text without a heavy OCR (Optical Character Recognition) package. If you have scanned files, you can copy-paste the text layers or run an offline OCR reader on your machine first.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-base font-semibold text-primary mb-2">What is the file size limit?</h3>
+          <p class="text-sm text-body leading-relaxed">
+            We support file sizes up to **100MB**. Standard browser processes can easily handle large text collections, but very large files might require some seconds of processing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

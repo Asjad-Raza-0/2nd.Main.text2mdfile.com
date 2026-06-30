@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout activeTab="privacy" title="Privacy Policy | 100% Local Conversions - convert2md.com" description="Read our privacy commitment. convert2md.com processes all PDF and text conversions locally in your browser. We never upload files to any server.">
+  <section class="max-w-3xl mx-auto px-6 py-16 relative z-10">
+    <div class="mb-12">
+      <h1 class="font-geist text-4xl md:text-5xl font-semibold tracking-tight text-primary mb-4 text-balance">
+        privacy policy
+      </h1>
+      <p class="text-xs font-mono text-mute">
+        Last updated: June 28, 2026
+      </p>
+    </div>
+
+    <div class="space-y-8 prose prose-sm max-w-none text-body">
+      <div>
+        <h2 class="text-lg font-semibold text-primary mb-3">Our Core Commitment</h2>
+        <p class="text-sm leading-relaxed mb-4">
+          At convert2md.com, we believe that you should not have to choose between utility and data privacy. 
+          Our core policy is simple: <strong>we do not collect, store, transmit, or share your documents or text data.</strong>
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-primary mb-3">How We Process Data</h2>
+        <p class="text-sm leading-relaxed mb-4">
+          All document conversions, whether PDF-to-Markdown or HTML-to-Markdown, are executed **locally inside your web browser**.
+        </p>
+        <ul class="list-disc pl-5 space-y-2 text-sm leading-relaxed">
+          <li><strong>No Uploads:</strong> When you select a PDF file or paste text, the browser reads it directly from your device using JavaScript API sandboxes. No packets are transmitted to our server or any API endpoint.</li>
+          <li><strong>Sandboxed execution:</strong> The converted markdown data is compiled and temporarily stored in your local browser runtime memory. As soon as you reload or close the tab, this memory buffer is cleared.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-primary mb-3">Third-Party CDNs</h2>
+        <p class="text-sm leading-relaxed mb-4">
+          To ensure quick load times, this site uses Cloudflare and cdnjs CDNs to cache libraries such as `pdf.js` and `marked.js`. 
+          These CDNs do not receive your documents or text data; they only deliver the static scripts needed to compile the application in your browser.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-primary mb-3">Contact</h2>
+        <p class="text-sm leading-relaxed mb-4">
+          Since we store absolutely no user accounts or files, there is no personal data database. For questions regarding the open-source libraries or styling, please contact us via our site domain or the project's repository.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

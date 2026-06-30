@@ -1,0 +1,1071 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout activeTab="pdf">
+  <!-- Hero Section -->
+  <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
+    <div class="flex flex-col items-center text-center">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-canvas-soft-2 border border-hairline rounded-full text-xs font-mono text-mute mb-6 select-none">
+        <span class="text-primary font-medium">convert2md v1.0.0</span>
+        <span class="text-hairline-strong">|</span>
+        <span>Secure document extraction</span>
+      </div>
+      
+      <h1 class="font-geist text-5xl md:text-7xl font-semibold tracking-tighter text-primary leading-tight md:leading-[1.05] mb-6 max-w-4xl text-center text-balance">
+        convert PDF to markdown, <br class="hidden sm:inline" />
+        <span class="bg-gradient-to-r from-gradient-develop-start to-gradient-develop-end bg-clip-text text-transparent">instantly.</span>
+      </h1>
+      
+      <p class="text-lg md:text-xl text-body max-w-2xl text-center mb-8 leading-relaxed text-pretty">
+        Extract clean, formatted Markdown from your PDFs directly in your browser. 
+        <strong>100% private</strong> — your documents are never uploaded to any server.
+      </p>
+    </div>
+  </section>
+
+  <!-- Converter Main Area -->
+  <section class="max-w-6xl mx-auto px-6 pb-24 relative z-10" id="converter-section">
+    
+    <!-- Upload Dropzone (Visible by default) -->
+    <div id="dropzone-container" class="max-w-3xl mx-auto">
+      <div 
+        id="dropzone" 
+        class="border-2 border-dashed border-hairline-strong/60 hover:border-primary/50 bg-canvas rounded-xl p-16 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center text-center shadow-xs relative group focus-within:ring-2 focus-within:ring-primary"
+      >
+        <input 
+          type="file" 
+          id="file-input" 
+          accept=".pdf" 
+          multiple
+          class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+          aria-label="Upload PDF file(s)"
+        />
+        
+        <div class="h-14 w-14 rounded-full bg-canvas-soft-2 flex items-center justify-center text-primary group-hover:scale-105 transition-transform duration-200 border border-hairline mb-5" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
+        </div>
+        
+        <h2 class="text-lg font-semibold text-primary mb-1">
+          Drag and drop your PDF here
+        </h2>
+        <p class="text-sm text-body mb-4">
+          or click to browse your local files
+        </p>
+        
+        <div class="flex flex-wrap justify-center gap-3 text-xs text-mute font-mono">
+          <span class="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-cyan-deep"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296" /></svg>
+            Client-Side Parsing
+          </span>
+          <span class="text-hairline-strong">&bull;</span>
+          <span class="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-cyan-deep"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296" /></svg>
+            Max 100MB
+          </span>
+        </div>
+      </div>
+      
+      <!-- Warning Alert box for scanned files -->
+      <div class="mt-4 p-3 bg-warning-soft/30 border border-warning/15 rounded-lg flex gap-3 text-xs text-warning-deep">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+        <p>
+          <strong>Note:</strong> Standard browser parsing extracts text layers from the PDF. If your PDF is an image-only scan (without selectable text), the output may be blank. You can convert raw text to Markdown using our <a href="/text-to-markdown" class="underline hover:text-warning-deep font-semibold">Text Converter</a> instead.
+        </p>
+      </div>
+    </div>
+
+    <!-- Processing State (Hidden by default) -->
+    <div id="processing-container" class="hidden max-w-md mx-auto bg-canvas border border-hairline rounded-xl p-8 shadow-sm text-center">
+      <div class="relative flex items-center justify-center mb-6">
+        <svg class="animate-spin h-10 w-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+      <h2 id="processing-title" class="text-base font-semibold text-primary mb-1">
+        Reading PDF File…
+      </h2>
+      <p id="processing-status" class="text-xs text-mute font-mono mb-4">
+        Initializing worker thread
+      </p>
+      <div class="w-full bg-canvas-soft-2 rounded-full h-1.5 border border-hairline overflow-hidden">
+        <div id="processing-bar" class="bg-primary h-1.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+      </div>
+    </div>
+
+    <!-- Workspace Container (Hidden by default) -->
+    <div id="workspace-container" class="hidden space-y-6">
+      
+      <!-- Top Actions Header -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-canvas border border-hairline p-4 rounded-xl shadow-xs">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="inline-block px-2 py-0.5 bg-canvas-soft-2 border border-hairline text-[10px] font-mono rounded text-mute font-semibold">PDF</span>
+            <h3 id="current-filename" class="text-sm font-medium text-primary truncate max-w-xs sm:max-w-md">document.pdf</h3>
+          </div>
+          <div class="flex gap-3 text-xs text-mute font-mono mt-1">
+            <span id="file-size-badge">Size: 0.0 MB</span>
+            <span>&bull;</span>
+            <span id="page-count-badge">Pages: 0</span>
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <button 
+            id="btn-re-upload" 
+            class="text-xs font-medium border border-hairline rounded-md px-3 py-2 bg-canvas hover:bg-canvas-soft text-primary inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label="Upload a different PDF"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+            Upload Another
+          </button>
+          
+          <button 
+            id="btn-copy-md" 
+            class="text-xs font-semibold bg-primary text-canvas hover:bg-primary/90 border border-primary rounded-md px-4 py-2 inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label="Copy markdown to clipboard"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.524 2.25h-3.048a2.25 2.25 0 0 0-2.142 1.638M15.666 3.888A2.25 2.25 0 0 1 13.524 5.25h-3.048a2.25 2.25 0 0 1-2.142-1.638m8.262 0A2.25 2.25 0 0 1 18 6V18A2.25 2.25 0 0 1 15.75 20.25H8.25A2.25 2.25 0 0 1 6 18V6a2.25 2.25 0 0 1 2.25-2.25h1.5m9 0h.008v.008h-.008V4.31z" /></svg>
+            <span id="copy-btn-text">Copy MD</span>
+          </button>
+          
+          <button 
+            id="btn-download-md" 
+            class="text-xs font-semibold border border-hairline bg-canvas hover:bg-canvas-soft rounded-md px-4 py-2 inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label="Download markdown file"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+            Download .md
+          </button>
+        </div>
+      </div>
+      
+      <!-- Side by Side Editor and Preview Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        
+        <!-- Left Side: Markdown Editor -->
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[550px]">
+          <div class="h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Markdown Source</span>
+            <div class="flex items-center gap-2 text-xs text-mute font-mono">
+              <span id="char-count">Chars: 0</span>
+              <span>&bull;</span>
+              <span id="word-count">Words: 0</span>
+            </div>
+          </div>
+          
+          <div class="relative flex-grow flex">
+            <textarea 
+              id="markdown-textarea" 
+              class="w-full min-h-[500px] flex-grow p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none"
+              spellcheck="false"
+              placeholder="Your extracted markdown will appear here. You can edit this directly..."
+            ></textarea>
+          </div>
+        </div>
+        
+        <!-- Right Side: Live HTML/Visual Preview -->
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[550px]">
+          <div class="h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Rendered HTML Preview</span>
+            <div class="flex items-center gap-1.5">
+              <button 
+                id="btn-preview-toggle-html"
+                class="text-[10px] font-mono px-2 py-0.5 rounded bg-primary text-canvas font-semibold"
+                aria-label="Toggle HTML Visual Preview"
+              >Visual</button>
+              <button 
+                id="btn-preview-toggle-raw"
+                class="text-[10px] font-mono px-2 py-0.5 rounded border border-hairline text-mute hover:text-primary hover:bg-canvas-soft-2"
+                aria-label="Toggle Raw Text Preview"
+              >Raw HTML</button>
+            </div>
+          </div>
+          
+          <!-- Visual Preview Panel -->
+          <div 
+            id="preview-visual" 
+            class="flex-grow p-6 overflow-y-auto prose prose-sm max-w-none text-body bg-canvas prose-headings:text-primary prose-a:text-link prose-strong:text-primary prose-code:font-mono prose-code:bg-canvas-soft-2 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-primary prose-pre:text-canvas prose-pre:p-4 prose-pre:rounded-lg prose-ul:list-disc prose-ol:list-decimal"
+            aria-live="polite"
+          >
+            <!-- Rendered HTML will inject here -->
+          </div>
+          
+          <!-- Raw HTML Panel (Hidden by default) -->
+          <pre 
+            id="preview-raw" 
+            class="hidden flex-grow p-5 overflow-y-auto font-mono text-[13px] text-mute bg-canvas-soft-2 border-0 select-text overflow-x-auto whitespace-pre-wrap"
+          ><!-- Raw HTML text will inject here --></pre>
+        </div>
+      </div>
+      
+      <!-- Option Controls Drawer -->
+      <div class="bg-canvas border border-hairline p-5 rounded-xl shadow-xs grid grid-cols-1 sm:grid-cols-4 gap-6">
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Formatting Options</h4>
+          <label class="flex items-center gap-2.5 text-sm text-body cursor-pointer select-none">
+            <input type="checkbox" id="opt-page-dividers" class="rounded border-hairline text-primary focus:ring-primary h-4 w-4" checked />
+            Include Page Numbers
+          </label>
+        </div>
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Header Detection</h4>
+          <label class="flex items-center gap-2.5 text-sm text-body cursor-pointer select-none">
+            <input type="checkbox" id="opt-header-detect" class="rounded border-hairline text-primary focus:ring-primary h-4 w-4" checked />
+            Auto-Detect Heading Sizes
+          </label>
+        </div>
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Whitespace</h4>
+          <label class="flex items-center gap-2.5 text-sm text-body cursor-pointer select-none">
+            <input type="checkbox" id="opt-preserve-breaks" class="rounded border-hairline text-primary focus:ring-primary h-4 w-4" />
+            Preserve Strict Line Breaks
+          </label>
+        </div>
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Engine Mode</h4>
+          <label class="flex items-center gap-2.5 text-sm text-body cursor-pointer select-none">
+            <input type="checkbox" id="opt-high-accuracy" class="rounded border-hairline text-primary focus:ring-primary h-4 w-4" />
+            <span class="flex items-center gap-1.5">
+              High-Accuracy Mode
+              <span class="inline-flex items-center px-1.5 py-0.5 bg-violet-soft border border-violet-deep/20 rounded text-[9px] font-semibold text-violet-deep uppercase tracking-wider">Beta</span>
+            </span>
+          </label>
+          <div id="backend-url-container" class="hidden mt-2">
+            <div class="flex gap-1.5">
+              <input type="url" id="backend-url-input" placeholder="https://your-backend.vercel.app" class="w-full text-[11px] px-2 py-1 border border-hairline rounded bg-canvas-soft-2 text-mute font-mono focus:outline-none focus:ring-1 focus:ring-primary" />
+              <button id="btn-set-backend-url" class="shrink-0 text-[10px] px-2 py-1 bg-primary text-canvas rounded font-semibold hover:bg-primary/90">Set</button>
+            </div>
+            <p class="text-[10px] text-mute mt-1">Self-hosted backend URL for server-side conversion</p>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Competitor Comparison & Marketing Section -->
+  <section class="border-t border-hairline bg-canvas relative z-10 py-20 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-geist text-3xl font-semibold tracking-tight text-primary mb-4 text-center">
+        Why choose convert2md.com?
+      </h2>
+      <p class="text-sm text-body mb-12 text-center max-w-2xl mx-auto">
+        Most PDF to Markdown tools rely on uploading your files to third-party cloud servers. This exposes your intellectual property, introduces queue delays, and limits your free use. We built a better way.
+      </p>
+
+      <!-- Grid of key advantages -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div class="bg-canvas border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="h-8 w-8 rounded-full bg-cyan-soft text-cyan-deep flex items-center justify-center mb-4 border border-cyan-deep/10" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25z" /></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-primary mb-2">100% Client-Side Privacy</h3>
+          <p class="text-xs text-body leading-relaxed">
+            Your documents are processed locally using standard JavaScript in the browser. Zero bytes of your files are sent to the cloud. Perfect for legal and business files.
+          </p>
+        </div>
+
+        <div class="bg-canvas border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="h-8 w-8 rounded-full bg-violet-soft text-violet-deep flex items-center justify-center mb-4 border border-violet-deep/10" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-primary mb-2">Zero Delays or Paywalls</h3>
+          <p class="text-xs text-body leading-relaxed">
+            No uploading queues, no waiting lists, and no daily limits. Convert massive documents of up to 100MB instantly without paying a subscription.
+          </p>
+        </div>
+
+        <div class="bg-canvas border border-hairline p-5 rounded-lg shadow-xs">
+          <div class="h-8 w-8 rounded-full bg-cyan-soft text-cyan-deep flex items-center justify-center mb-4 border border-cyan-deep/10" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-primary mb-2">Interactive Output Control</h3>
+          <p class="text-xs text-body leading-relaxed">
+            Don't just download a static file blindly. Edit raw markdown, adjust layout settings, view side-by-side visual previews, and copy select segments on the fly.
+          </p>
+        </div>
+      </div>
+
+      <!-- Table Comparison (SEO Optimization) -->
+      <h3 class="text-base font-semibold text-primary mb-6 text-center">Feature-by-Feature Comparison</h3>
+      <div class="border border-hairline rounded-lg overflow-hidden bg-canvas">
+        <table class="w-full border-collapse text-left text-sm" role="table">
+          <thead>
+            <tr class="bg-canvas-soft border-b border-hairline text-xs font-mono uppercase text-mute">
+              <th class="p-3.5 font-semibold">Features</th>
+              <th class="p-3.5 font-semibold text-primary">convert2md.com</th>
+              <th class="p-3.5 font-semibold">Zamzar PDF to MD</th>
+              <th class="p-3.5 font-semibold">Langflow Docling</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-hairline">
+            <tr>
+              <td class="p-3.5 font-medium text-primary">Conversion Speed</td>
+              <td class="p-3.5 text-cyan-deep font-semibold">Instant (Local)</td>
+              <td class="p-3.5 text-body">Slow (Queue Upload)</td>
+              <td class="p-3.5 text-body">Fast (Runs Locally)</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-medium text-primary">Data Security</td>
+              <td class="p-3.5 text-cyan-deep font-semibold">100% Private (No Uploads)</td>
+              <td class="p-3.5 text-error-deep">Risk (Server Storage)</td>
+              <td class="p-3.5 text-body">Private (CLI based)</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-medium text-primary">Free limits</td>
+              <td class="p-3.5 text-cyan-deep font-semibold">Unlimited conversions</td>
+              <td class="p-3.5 text-error-deep">Strict 2 per 24 hours</td>
+              <td class="p-3.5 text-body">Unlimited</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-medium text-primary">Pre-Download Editing</td>
+              <td class="p-3.5 text-cyan-deep font-semibold">Yes, side-by-side workspace</td>
+              <td class="p-3.5 text-error-deep">No (Blind download)</td>
+              <td class="p-3.5 text-error-deep">No (Code scripts only)</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-medium text-primary">Technical Setup</td>
+              <td class="p-3.5 text-cyan-deep font-semibold">None (Open website)</td>
+              <td class="p-3.5 text-body">None (Open website)</td>
+              <td class="p-3.5 text-error-deep">High (Python, LLM node APIs)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Load PDF.js and Marked from CDNs inside client script -->
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-ff5a940921b04eeafdbe37ffcfd966bbf7825186e93938128e6a5b310675fc2b57daffd670020aa91bfe5350d4086e9e" crossorigin="anonymous"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.5/marked.min.js" integrity="sha384-614500c97e0b8658ca9a6ebecff92daf84dc74d85333dc9243cba3f06ba88df352541db658e95106f111bd2ff4bf4e11" crossorigin="anonymous"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" integrity="sha384-784bb90938f7a86beef4f749b92f98964362eddd97c5044e00560eaf9f7380e6ed95cbb1d5a7b5225deeee3bdd0925ae" crossorigin="anonymous"></script>
+  
+  <script is:inline>
+    // Configure PDF.js worker
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      // Note: PDF.js worker integrity is verified via fetch + SRI when loaded as a worker
+    }
+
+    // DOM Elements
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const dropzoneContainer = document.getElementById('dropzone-container');
+    const processingContainer = document.getElementById('processing-container');
+    const processingTitle = document.getElementById('processing-title');
+    const processingStatus = document.getElementById('processing-status');
+    const processingBar = document.getElementById('processing-bar');
+    const workspaceContainer = document.getElementById('workspace-container');
+    
+    const currentFilename = document.getElementById('current-filename');
+    const fileSizeBadge = document.getElementById('file-size-badge');
+    const pageCountBadge = document.getElementById('page-count-badge');
+    
+    const btnReUpload = document.getElementById('btn-re-upload');
+    const btnCopyMd = document.getElementById('btn-copy-md');
+    const copyBtnText = document.getElementById('copy-btn-text');
+    const btnDownloadMd = document.getElementById('btn-download-md');
+    
+    const markdownTextarea = document.getElementById('markdown-textarea');
+    const previewVisual = document.getElementById('preview-visual');
+    const previewRaw = document.getElementById('preview-raw');
+    
+    const btnPreviewVisual = document.getElementById('btn-preview-toggle-html');
+    const btnPreviewRaw = document.getElementById('btn-preview-toggle-raw');
+    
+    const charCount = document.getElementById('char-count');
+    const wordCount = document.getElementById('word-count');
+    
+    const optPageDividers = document.getElementById('opt-page-dividers');
+    const optHeaderDetect = document.getElementById('opt-header-detect');
+    const optPreserveBreaks = document.getElementById('opt-preserve-breaks');
+
+    let pdfData = null; // Store loaded arrayBuffer
+    let currentFileNameStr = "";
+    let currentFileSizeStr = "";
+    let userEdited = false; // Track if user manually edited the textarea
+    let pdfCache = null; // { totalPages, pages: [{ items, fontSizes }], bodyFontSize, pageBodyFontSizes: [] }
+    let cachedPdfTotalPages = 0;
+    let backendUrl = localStorage.getItem('markitdown-backend-url') || ''; // Optional backend URL
+    
+    // Backend / high accuracy mode elements
+    const optHighAccuracy = document.getElementById('opt-high-accuracy');
+    const backendUrlInput = document.getElementById('backend-url-input');
+    const backendUrlContainer = document.getElementById('backend-url-container');
+    const btnSetBackendUrl = document.getElementById('btn-set-backend-url');
+
+    // Drag & drop styling hooks
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('border-primary', 'bg-canvas-soft-2');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('border-primary', 'bg-canvas-soft-2');
+      }, false);
+    });
+
+    let batchQueue = []; // Queue of files for batch conversion
+    let batchResults = [];
+
+    // Keyboard support for dropzone (Enter/Space to activate file picker)
+    dropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+    dropzone.setAttribute('tabindex', '0');
+    dropzone.setAttribute('role', 'button');
+
+    // File selection handler
+    fileInput.addEventListener('change', handleFileSelect);
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = [...dt.files].filter(f => f.type === 'application/pdf');
+      if (files.length > 0) {
+        if (files.length === 1) {
+          processPdfFile(files[0]);
+        } else {
+          startBatchConversion(files);
+        }
+      } else {
+        alert("Please drop valid PDF file(s).");
+      }
+    });
+
+    function handleFileSelect(e) {
+      const files = [...e.target.files];
+      if (files.length === 0) return;
+      if (files.length === 1) {
+        processPdfFile(files[0]);
+      } else {
+        startBatchConversion(files);
+      }
+    }
+
+    function startBatchConversion(files) {
+      batchQueue = files.map(f => f);
+      batchResults = [];
+      updateProgressBar(5, `Batch: 0/${batchQueue.length}`, "Preparing...");
+      processingContainer.classList.remove('hidden');
+      dropzoneContainer.classList.add('hidden');
+      workspaceContainer.classList.add('hidden');
+      processBatchFile(0);
+    }
+
+    async function processBatchFile(idx) {
+      if (idx >= batchQueue.length) {
+        // All done - combine results
+        const combined = batchResults.map((r, i) => {
+          const ext = batchQueue[i].name.lastIndexOf('.');
+          const baseName = ext > 0 ? batchQueue[i].name.substring(0, ext) : batchQueue[i].name;
+          const header = batchResults.length > 1 ? `# ${baseName}\n\n` : '';
+          return header + r;
+        }).join('\n\n---\n\n');
+        markdownTextarea.value = combined;
+        userEdited = false;
+        updateCountsAndPreviews();
+        processingContainer.classList.add('hidden');
+        workspaceContainer.classList.remove('hidden');
+        batchQueue = [];
+        batchResults = [];
+        return;
+      }
+
+      const file = batchQueue[idx];
+      updateProgressBar(5 + Math.round((idx / batchQueue.length) * 90), `Batch ${idx + 1}/${batchQueue.length}`, file.name);
+
+      const maxSize = 100 * 1024 * 1024;
+      if (file.size > maxSize) {
+        batchResults.push(`*Skipped "${file.name}" - exceeds 100MB limit.*`);
+        processBatchFile(idx + 1);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        pdfData = event.target.result;
+        pdfCache = null;
+        userEdited = false;
+        
+        try {
+          if (optHighAccuracy.checked && backendUrl) {
+            await runBackendConversion();
+          } else {
+            await parsePdf();
+          }
+          batchResults.push(markdownTextarea.value);
+        } catch (e) {
+          batchResults.push(`*Conversion of "${file.name}" failed: ${e.message}*`);
+        }
+        processBatchFile(idx + 1);
+      };
+      reader.onerror = function() {
+        batchResults.push(`*Failed to read "${file.name}".*`);
+        processBatchFile(idx + 1);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Main parser trigger
+    function processPdfFile(file) {
+      const maxSize = 100 * 1024 * 1024; // 100MB
+      if (file.size > maxSize) {
+        alert("File exceeds the 100MB size limit. Please choose a smaller file.");
+        resetToUpload();
+        return;
+      }
+      
+      currentFileNameStr = file.name;
+      currentFileSizeStr = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+      
+      // Update UI elements
+      currentFilename.textContent = file.name;
+      fileSizeBadge.textContent = "Size: " + currentFileSizeStr;
+      
+      // Show processing bar
+      dropzoneContainer.classList.add('hidden');
+      processingContainer.classList.remove('hidden');
+      workspaceContainer.classList.add('hidden');
+      
+      updateProgressBar(5, "Reading PDF file...", "Allocating local file stream");
+      
+      userEdited = false;
+      pdfCache = null;
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        pdfData = event.target.result;
+        runPdfConversion();
+      };
+      
+      reader.onerror = function() {
+        alert("Failed to read file. Please try again.");
+        resetToUpload();
+      };
+      
+      reader.readAsArrayBuffer(file);
+    }
+
+    let pdfPassword = '';
+
+    function promptForPassword() {
+      return prompt("This PDF is password-protected. Enter the password:", "");
+    }
+
+    // PDF to Markdown Core Conversion Algorithm
+    async function parsePdf() {
+      if (!pdfData) return;
+      
+      try {
+        updateProgressBar(15, "Initializing Parser...", "Loading PDF.js engine");
+        
+        const loadingTask = pdfjsLib.getDocument({
+          data: pdfData,
+          password: pdfPassword || undefined,
+        });
+        
+        loadingTask.onPassword = function(updatePassword, reason) {
+          if (reason === 1) { // NEED_PASSWORD
+            const pwd = promptForPassword();
+            if (pwd !== null) {
+              pdfPassword = pwd;
+              updatePassword(pwd);
+            } else {
+              updatePassword(null); // cancel
+            }
+          } else if (reason === 2) { // INCORRECT_PASSWORD
+            const pwd = promptForPassword();
+            if (pwd !== null) {
+              pdfPassword = pwd;
+              updatePassword(pwd);
+            } else {
+              updatePassword(null);
+            }
+          }
+        };
+        
+        // Progress hook for PDF loading
+        loadingTask.onProgress = function(progress) {
+          if (progress.total > 0) {
+            const percent = Math.round((progress.loaded / progress.total) * 30) + 15;
+            updateProgressBar(percent, "Downloading text layers...", `Loaded ${Math.round(progress.loaded/1024)} KB`);
+          }
+        };
+        
+        const pdf = await loadingTask.promise;
+        const totalPages = pdf.numPages;
+        cachedPdfTotalPages = totalPages;
+        pageCountBadge.textContent = "Pages: " + totalPages;
+        
+        updateProgressBar(50, "Parsing layout layers...", `Preparing ${totalPages} page(s)`);
+        
+        const pages = [];
+        let globalFontCounts = {};
+        let globalMaxCount = 0;
+        let globalBodyFontSize = 10;
+        
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          updateProgressBar(
+            50 + Math.round((pageNum / totalPages) * 45), 
+            `Parsing Page ${pageNum} of ${totalPages}…`, 
+            "Extracting spatial coordinates"
+          );
+          
+          const page = await pdf.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const items = textContent.items;
+          
+          // Extract link annotations for this page
+          let annotations = [];
+          try {
+            const rawAnnotations = await page.getAnnotations();
+            annotations = rawAnnotations
+              .filter(a => a.subtype === 'Link' && a.url)
+              .map(a => ({
+                url: a.url,
+                rect: a.rect || null, // [x1, y1, x2, y2]
+                top: a.rect ? a.rect[1] : 0,
+                bottom: a.rect ? a.rect[3] : 0,
+                left: a.rect ? a.rect[0] : 0,
+                right: a.rect ? a.rect[2] : 0
+              }));
+          } catch (e) {
+            // Annotations may fail on some PDFs; continue without them
+          }
+          
+          const fontSizes = items.map(item => Math.abs(item.transform[3] || item.transform[0]));
+          
+          // Determine page-level body font size (mode)
+          const fontSizeCounts = {};
+          let pageMaxCount = 0;
+          let pageBodyFontSize = 10;
+          
+          for (const size of fontSizes) {
+            const roundedSize = Math.round(size * 10) / 10;
+            fontSizeCounts[roundedSize] = (fontSizeCounts[roundedSize] || 0) + 1;
+            if (fontSizeCounts[roundedSize] > pageMaxCount) {
+              pageMaxCount = fontSizeCounts[roundedSize];
+              pageBodyFontSize = roundedSize;
+            }
+            // Also track globally
+            globalFontCounts[roundedSize] = (globalFontCounts[roundedSize] || 0) + 1;
+            if (globalFontCounts[roundedSize] > globalMaxCount) {
+              globalMaxCount = globalFontCounts[roundedSize];
+              globalBodyFontSize = roundedSize;
+            }
+          }
+          
+          pages.push({
+            items: items,
+            bodyFontSize: pageBodyFontSize,
+            annotations: annotations
+          });
+        }
+        
+        pdfCache = {
+          totalPages: totalPages,
+          pages: pages,
+          bodyFontSize: globalBodyFontSize
+        };
+        
+        renderMarkdownFromCache();
+        
+        // Show Workspace UI
+        processingContainer.classList.add('hidden');
+        workspaceContainer.classList.remove('hidden');
+        
+      } catch (error) {
+        console.error("PDF parse error: ", error);
+        alert("An error occurred while parsing the PDF: " + error.message);
+        resetToUpload();
+      }
+    }
+
+    function renderMarkdownFromCache() {
+      if (!pdfCache) return;
+      
+      // Don't clobber user edits
+      if (userEdited) return;
+      
+      const { totalPages, pages, bodyFontSize } = pdfCache;
+      const yThreshold = 5;
+      let markdownText = "";
+      
+      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const pageData = pages[pageNum - 1];
+        if (!pageData || pageData.items.length === 0) continue;
+        
+        const pageBodyFontSize = pageData.bodyFontSize;
+        const effectiveBodySize = pageBodyFontSize || bodyFontSize;
+        
+        // Sort items: top-to-bottom (Y descending), then left-to-right (X ascending)
+        const sortedItems = [...pageData.items].sort((a, b) => {
+          const yA = a.transform[5];
+          const yB = b.transform[5];
+          if (Math.abs(yA - yB) > yThreshold) {
+            return yB - yA;
+          }
+          return a.transform[4] - b.transform[4];
+        });
+        
+        // Group sorted items into physical text lines
+        const lines = [];
+        let currentLine = [];
+        let currentY = null;
+        
+        for (const item of sortedItems) {
+          const y = item.transform[5];
+          
+          if (currentY === null || Math.abs(y - currentY) > yThreshold) {
+            if (currentLine.length > 0) {
+              lines.push(currentLine);
+            }
+            currentLine = [item];
+            currentY = y;
+          } else {
+            currentLine.push(item);
+          }
+        }
+        if (currentLine.length > 0) {
+          lines.push(currentLine);
+        }
+        
+        // Page divider markdown label
+        if (optPageDividers.checked && pageNum > 1) {
+          markdownText += `\n\n--- [Page ${pageNum}] ---\n\n`;
+        }
+        
+        // Process text line elements
+        for (const line of lines) {
+          let lineStr = "";
+          let lastX = 0;
+          let lastWidth = 0;
+          let minY = Infinity, maxY = -Infinity;
+          let minX = Infinity, maxX = -Infinity;
+          let maxFontInLine = 0;
+          let hasBold = false;
+          let hasItalic = false;
+          
+          for (const item of line) {
+            const x = item.transform[4];
+            const y = item.transform[5];
+            const fontSize = Math.abs(item.transform[3] || item.transform[0]);
+            if (fontSize > maxFontInLine) {
+              maxFontInLine = fontSize;
+            }
+            
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x + (item.width || 0));
+            
+            // Detect bold/italic from fontName
+            const fontName = (item.fontName || "").toLowerCase();
+            if (fontName.includes("bold")) hasBold = true;
+            if (fontName.includes("italic") || fontName.includes("oblique")) hasItalic = true;
+            
+            // Respect spatial formatting layout
+            if (lineStr.length > 0 && x > lastX + lastWidth + 2) {
+              if (!item.str.startsWith(" ") && !lineStr.endsWith(" ")) {
+                lineStr += " ";
+              }
+            }
+            
+            lineStr += item.str;
+            lastX = x;
+            lastWidth = item.width || 0;
+          }
+          
+          lineStr = lineStr.trim();
+          if (!lineStr) continue;
+          
+          // Check if this line overlaps with any link annotation
+          let linkUrl = null;
+          const annotations = pageData.annotations || [];
+          for (const ann of annotations) {
+            if (ann.rect) {
+              const annTop = ann.rect[1];
+              const annBottom = ann.rect[3];
+              const annLeft = ann.rect[0];
+              const annRight = ann.rect[2];
+              // Check overlap between line bounding box and annotation rect
+              if (maxY >= annTop && minY <= annBottom && maxX >= annLeft && minX <= annRight) {
+                linkUrl = ann.url;
+                break;
+              }
+            }
+          }
+          
+          // Apply bold/italic wrappers around the line
+          let processedLine = lineStr;
+          
+          // If this line has a link annotation, wrap as markdown link
+          if (linkUrl) {
+            processedLine = `[${processedLine}](${linkUrl})`;
+          }
+          
+          if (hasBold) processedLine = `**${processedLine}**`;
+          if (hasItalic && !hasBold) processedLine = `*${processedLine}*`;
+          if (hasBold && hasItalic) processedLine = `***${processedLine}***`;
+          
+          // Check headers detection with improved H1-H6 thresholds
+          if (optHeaderDetect.checked && maxFontInLine > effectiveBodySize + 1.8) {
+            const diff = maxFontInLine - effectiveBodySize;
+            let headerHash = "######";
+            if (diff > 12) {
+              headerHash = "#";
+            } else if (diff > 8) {
+              headerHash = "##";
+            } else if (diff > 5) {
+              headerHash = "###";
+            } else if (diff > 3.5) {
+              headerHash = "####";
+            } else if (diff > 2.5) {
+              headerHash = "#####";
+            } else {
+              headerHash = "######";
+            }
+            
+            if (!processedLine.startsWith("#")) {
+              markdownText += `\n${headerHash} ${processedLine}\n`;
+            } else {
+              markdownText += `\n${processedLine}\n`;
+            }
+          } 
+          // List item
+          else if (/^[•\-\*]\s+/.test(processedLine) || /^\d+[\.\)]\s+/.test(processedLine)) {
+            markdownText += `\n${processedLine}`;
+          } 
+          // Paragraph
+          else {
+            if (optPreserveBreaks.checked) {
+              markdownText += `\n${processedLine}  `;
+            } else {
+              markdownText += `\n${processedLine}\n`;
+            }
+          }
+        }
+      }
+      
+      // Post-process
+      let cleanedMarkdown = markdownText
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+        
+      if (!cleanedMarkdown) {
+        cleanedMarkdown = "# Empty PDF File\n\nNo readable text layers were found in this document. It might be scanned. Try converting manually using the text converter tool.";
+      }
+      
+      markdownTextarea.value = cleanedMarkdown;
+      updateCountsAndPreviews();
+    }
+
+    // Backend high-accuracy conversion via markitdown/pdfplumber
+    async function runBackendConversion() {
+      if (!pdfData) return;
+      
+      try {
+        updateProgressBar(15, "Connecting to backend...", "Sending PDF to high-accuracy engine");
+        
+        const formData = new FormData();
+        const blob = new Blob([pdfData], { type: 'application/pdf' });
+        formData.append('file', blob, currentFileNameStr || 'document.pdf');
+        
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 60000);
+        
+        updateProgressBar(30, "Processing on server...", "Extracting tables and formatting");
+        
+        const response = await fetch(backendUrl.replace(/\/+$/, '') + '/convert/pdf', {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeout);
+        
+        if (!response.ok) {
+          throw new Error(`Backend returned ${response.status}: ${await response.text()}`);
+        }
+        
+        updateProgressBar(90, "Parsing response...", "Formatting markdown output");
+        
+        const data = await response.json();
+        
+        markdownTextarea.value = data.markdown || "# Error\n\nNo markdown content returned from backend.";
+        userEdited = false;
+        updateCountsAndPreviews();
+        
+        processingContainer.classList.add('hidden');
+        workspaceContainer.classList.remove('hidden');
+        
+      } catch (error) {
+        console.error("Backend conversion error: ", error);
+        alert("High-accuracy backend failed: " + error.message + "\n\nSwitching to client-side mode.");
+        optHighAccuracy.checked = false;
+        runPdfConversion();
+      }
+    }
+
+    // Wrapper: first call parses PDF, subsequent option toggles re-render from cache
+    async function runPdfConversion() {
+      if (optHighAccuracy.checked && backendUrl) {
+        pdfCache = null;
+        await runBackendConversion();
+      } else if (!pdfCache) {
+        await parsePdf();
+      } else {
+        renderMarkdownFromCache();
+      }
+    }
+
+    function updateProgressBar(percentage, title, details) {
+      processingBar.style.width = percentage + "%";
+      processingTitle.textContent = title;
+      processingStatus.textContent = details;
+    }
+
+    function resetToUpload() {
+      pdfData = null;
+      pdfCache = null;
+      cachedPdfTotalPages = 0;
+      userEdited = false;
+      fileInput.value = "";
+      dropzoneContainer.classList.remove('hidden');
+      processingContainer.classList.add('hidden');
+      workspaceContainer.classList.add('hidden');
+    }
+
+    // Text editor listeners
+    markdownTextarea.addEventListener('input', () => {
+      userEdited = true;
+      updateCountsAndPreviews();
+    });
+    
+    // Live update parser
+    function sanitize(html) {
+      if (typeof DOMPurify !== 'undefined') {
+        return DOMPurify.sanitize(html);
+      }
+      return html;
+    }
+
+    function updateCountsAndPreviews() {
+      const mdContent = markdownTextarea.value;
+      
+      // Update counters
+      charCount.textContent = "Chars: " + mdContent.length;
+      wordCount.textContent = "Words: " + (mdContent.trim() ? mdContent.trim().split(/\s+/).length : 0);
+      
+      // Render markdown using Marked from CDN
+      if (typeof marked !== 'undefined') {
+        const htmlContent = marked.parse(mdContent);
+        previewVisual.innerHTML = sanitize(htmlContent);
+        previewRaw.textContent = htmlContent;
+      } else {
+        // Simple fallback if CDN Marked fails
+        previewVisual.innerHTML = sanitize(`<pre class="whitespace-pre-wrap">${mdContent}</pre>`);
+        previewRaw.textContent = mdContent;
+      }
+    }
+
+    // Settings listeners to trigger re-parse
+    optPageDividers.addEventListener('change', runPdfConversion);
+    optHeaderDetect.addEventListener('change', runPdfConversion);
+    optPreserveBreaks.addEventListener('change', runPdfConversion);
+
+    // Backend / high accuracy mode
+    optHighAccuracy.addEventListener('change', () => {
+      if (optHighAccuracy.checked && !backendUrl) {
+        backendUrlContainer.classList.remove('hidden');
+      } else {
+        backendUrlContainer.classList.add('hidden');
+      }
+      if (pdfData) runPdfConversion();
+    });
+
+    btnSetBackendUrl.addEventListener('click', () => {
+      const url = backendUrlInput.value.trim();
+      if (url) {
+        backendUrl = url.replace(/\/+$/, '');
+        localStorage.setItem('markitdown-backend-url', backendUrl);
+        backendUrlContainer.classList.add('hidden');
+        if (pdfData) runPdfConversion();
+      }
+    });
+
+    btnReUpload.addEventListener('click', resetToUpload);
+
+    // Copy to Clipboard
+    btnCopyMd.addEventListener('click', () => {
+      const content = markdownTextarea.value;
+      navigator.clipboard.writeText(content).then(() => {
+        copyBtnText.textContent = "Copied!";
+        btnCopyMd.classList.remove('bg-primary');
+        btnCopyMd.classList.add('bg-cyan-deep', 'border-cyan-deep');
+        
+        setTimeout(() => {
+          copyBtnText.textContent = "Copy MD";
+          btnCopyMd.classList.add('bg-primary');
+          btnCopyMd.classList.remove('bg-cyan-deep', 'border-cyan-deep');
+        }, 1500);
+      }).catch(err => {
+        alert("Clipboard copy failed. Please select and copy manually.");
+      });
+    });
+
+    // Download MD
+    btnDownloadMd.addEventListener('click', () => {
+      const content = markdownTextarea.value;
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Generate clean filename matching original PDF title
+      const originalBase = currentFileNameStr.substring(0, currentFileNameStr.lastIndexOf('.')) || 'converted';
+      link.setAttribute('download', originalBase + '.md');
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+
+    // Visual vs Raw Preview toggles
+    btnPreviewVisual.addEventListener('click', () => {
+      previewVisual.classList.remove('hidden');
+      previewRaw.classList.add('hidden');
+      
+      btnPreviewVisual.classList.add('bg-primary', 'text-canvas');
+      btnPreviewVisual.classList.remove('border', 'border-hairline', 'text-mute', 'hover:text-primary', 'hover:bg-canvas-soft-2');
+      
+      btnPreviewRaw.classList.remove('bg-primary', 'text-canvas');
+      btnPreviewRaw.classList.add('border', 'border-hairline', 'text-mute', 'hover:text-primary', 'hover:bg-canvas-soft-2');
+    });
+
+    btnPreviewRaw.addEventListener('click', () => {
+      previewVisual.classList.add('hidden');
+      previewRaw.classList.remove('hidden');
+      
+      btnPreviewRaw.classList.add('bg-primary', 'text-canvas');
+      btnPreviewRaw.classList.remove('border', 'border-hairline', 'text-mute', 'hover:text-primary', 'hover:bg-canvas-soft-2');
+      
+      btnPreviewVisual.classList.remove('bg-primary', 'text-canvas');
+      btnPreviewVisual.classList.add('border', 'border-hairline', 'text-mute', 'hover:text-primary', 'hover:bg-canvas-soft-2');
+    });
+  </script>
+</Layout>

@@ -1,0 +1,215 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  activeTab?: 'pdf' | 'text' | 'about' | 'privacy';
+}
+
+const { 
+  title = "Free PDF & Text to Markdown Converter | 100% Private - convert2md.com", 
+  description = "Convert PDF to Markdown and Rich Text or HTML to Markdown instantly in your browser. 100% secure - files are never uploaded to any server. Free and fast.",
+  activeTab 
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, "https://convert2md.com");
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "convert2md",
+      "url": "https://convert2md.com",
+      "description": "Free online PDF to Markdown converter. 100% private, client-side processing.",
+      "applicationCategory": "Utility",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "convert2md.com"
+      }
+    })}></script>
+    
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="convert2md.com" />
+    <meta property="og:image" content="https://convert2md.com/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl.href} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="https://convert2md.com/og-image.png" />
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Ensure typography fonts apply globally */
+      body {
+        font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      code, pre, .font-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-canvas-soft text-ink flex flex-col antialiased selection:bg-primary selection:text-canvas">
+    
+    <!-- Vercel Nav Bar -->
+    <header class="h-16 border-b border-hairline bg-canvas/80 backdrop-blur-md sticky top-0 z-50 px-6">
+      <div class="max-w-6xl mx-auto h-full flex items-center justify-between">
+        
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-link rounded-sm" aria-label="convert2md home">
+          <svg viewBox="0 0 75 65" fill="none" class="h-5 w-auto text-primary" aria-hidden="true">
+            <path d="M37.5 0L75 65H0L37.5 0Z" fill="currentColor"/>
+          </svg>
+          <span class="font-geist font-semibold text-lg tracking-tight text-primary">convert2md</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-1.5" aria-label="Main Navigation">
+          <a 
+            href="/" 
+            class={`text-sm rounded-full px-3.5 py-1.5 transition-colors ${activeTab === 'pdf' ? 'bg-primary text-canvas font-medium' : 'text-body hover:bg-canvas-soft-2 hover:text-primary'}`}
+          >
+            PDF to Markdown
+          </a>
+          <a 
+            href="/text-to-markdown" 
+            class={`text-sm rounded-full px-3.5 py-1.5 transition-colors ${activeTab === 'text' ? 'bg-primary text-canvas font-medium' : 'text-body hover:bg-canvas-soft-2 hover:text-primary'}`}
+          >
+            Text to Markdown
+          </a>
+          <a 
+            href="/about" 
+            class={`text-sm rounded-full px-3.5 py-1.5 transition-colors ${activeTab === 'about' ? 'bg-primary text-canvas font-medium' : 'text-body hover:bg-canvas-soft-2 hover:text-primary'}`}
+          >
+            About
+          </a>
+        </nav>
+
+        <!-- Right Side Stats / Link -->
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-canvas border border-hairline rounded-full text-xs font-mono text-mute shadow-xs" title="Privacy Standard">
+            <span class="h-1.5 w-1.5 rounded-full bg-cyan-deep animate-pulse" aria-hidden="true"></span>
+            100% Client-Side
+          </div>
+          
+          <a 
+            href="/text-to-markdown" 
+            class="md:hidden text-xs font-medium border border-hairline rounded-md px-2.5 py-1.5 hover:bg-canvas-soft-2"
+          >
+            Switch Tool
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow relative mesh-gradient-bg">
+      <div class="mesh-gradient-glow" aria-hidden="true"></div>
+      <slot />
+    </main>
+
+    <!-- Vercel Footer -->
+    <footer class="border-t border-hairline bg-canvas py-16 px-6 relative z-10" aria-label="Site Footer">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+        
+        <!-- About convert2md -->
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-2 mb-4">
+            <svg viewBox="0 0 75 65" fill="none" class="h-4 w-auto text-primary" aria-hidden="true">
+              <path d="M37.5 0L75 65H0L37.5 0Z" fill="currentColor"/>
+            </svg>
+            <span class="font-geist font-semibold text-base tracking-tight text-primary">convert2md</span>
+          </div>
+          <p class="text-sm text-body leading-relaxed max-w-sm mb-4">
+            The next-generation document converter. Process, edit, and export your files into clean Markdown instantly and securely inside your browser.
+          </p>
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-cyan-deep bg-cyan-soft/40 border border-cyan-deep/20 rounded-md px-2.5 py-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+            </svg>
+            Zero Server Uploads &bull; 100% Private
+          </div>
+        </div>
+
+        <!-- Links Column 1: Tools -->
+        <div>
+          <h3 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-4">Tools</h3>
+          <ul class="space-y-2.5 text-sm" role="list">
+            <li>
+              <a href="/" class="text-body hover:text-primary transition-colors">PDF to Markdown</a>
+            </li>
+            <li>
+              <a href="/text-to-markdown" class="text-body hover:text-primary transition-colors">Text/HTML to Markdown</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Links Column 2: Legal & Support -->
+        <div>
+          <h3 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-4">Privacy & Info</h3>
+          <ul class="space-y-2.5 text-sm" role="list">
+            <li>
+              <a href="/about" class="text-body hover:text-primary transition-colors">About & Technology</a>
+            </li>
+            <li>
+              <a href="/privacy" class="text-body hover:text-primary transition-colors">Privacy Policy</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom border line and copyright -->
+      <div class="max-w-6xl mx-auto border-t border-hairline mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-mute font-mono">
+          &copy; 2026 convert2md.com. All rights reserved.
+        </p>
+        <p class="text-xs text-mute font-mono flex items-center gap-1">
+          Designed like Vercel. 
+          <span class="inline-block h-1.5 w-1.5 rounded-full bg-cyan-deep" aria-hidden="true"></span> 
+          Powered by Astro &amp; PDF.js
+        </p>
+      </div>
+    </footer>
+    <!-- Service Worker for offline/PWA support -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
+    </script>
+  </body>
+</html>

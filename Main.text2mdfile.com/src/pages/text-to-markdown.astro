@@ -1,0 +1,410 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout activeTab="text">
+  <!-- Hero Section -->
+  <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
+    <div class="flex flex-col items-center text-center">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-canvas-soft-2 border border-hairline rounded-full text-xs font-mono text-mute mb-6 select-none">
+        <span class="text-primary font-medium font-mono">WYSIWYG & HTML Converter</span>
+        <span class="text-hairline-strong">|</span>
+        <span>Local compilation</span>
+      </div>
+      
+      <h1 class="font-geist text-5xl md:text-7xl font-semibold tracking-tighter text-primary leading-tight md:leading-[1.05] mb-6 max-w-4xl text-center text-balance">
+        convert text & html to markdown, <br class="hidden sm:inline" />
+        <span class="bg-gradient-to-r from-gradient-develop-start to-gradient-develop-end bg-clip-text text-transparent">real-time.</span>
+      </h1>
+      
+      <p class="text-lg md:text-xl text-body max-w-2xl text-center mb-8 leading-relaxed text-pretty">
+        Paste formatted text, rich content, or raw HTML, and convert it instantly into clean Markdown. 
+        Fully secure client-side execution.
+      </p>
+    </div>
+  </section>
+
+  <!-- Converter Main Area -->
+  <section class="max-w-6xl mx-auto px-6 pb-24 relative z-10" id="converter-section">
+    <div class="space-y-6">
+      
+      <!-- Top Actions Header -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-canvas border border-hairline p-4 rounded-xl shadow-xs">
+        <!-- Input Selector Tabs -->
+        <div class="flex border border-hairline rounded-lg p-0.5 bg-canvas-soft-2 self-start">
+          <button 
+            id="tab-btn-visual" 
+            class="text-xs font-medium px-3.5 py-1.5 rounded-md transition-colors bg-canvas text-primary shadow-xs"
+            role="tab"
+            aria-selected="true"
+          >
+            Visual Rich Editor
+          </button>
+          <button 
+            id="tab-btn-html" 
+            class="text-xs font-medium px-3.5 py-1.5 rounded-md transition-colors text-mute hover:text-primary"
+            role="tab"
+            aria-selected="false"
+          >
+            Raw HTML Source
+          </button>
+        </div>
+        
+        <!-- Output Action buttons -->
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button 
+            id="btn-clear" 
+            class="text-xs font-medium border border-hairline rounded-md px-3 py-2 bg-canvas hover:bg-canvas-soft text-primary inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label="Clear all content"
+          >
+            Clear Fields
+          </button>
+          
+          <button 
+            id="btn-copy-md" 
+            class="text-xs font-semibold bg-primary text-canvas hover:bg-primary/90 border border-primary rounded-md px-4 py-2 inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label="Copy converted markdown to clipboard"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.524 2.25h-3.048a2.25 2.25 0 0 0-2.142 1.638M15.666 3.888A2.25 2.25 0 0 1 13.524 5.25h-3.048a2.25 2.25 0 0 1-2.142-1.638m8.262 0A2.25 2.25 0 0 1 18 6V18A2.25 2.25 0 0 1 15.75 20.25H8.25A2.25 2.25 0 0 1 6 18V6a2.25 2.25 0 0 1 2.25-2.25h1.5m9 0h.008v.008h-.008V4.31z" /></svg>
+            <span id="copy-btn-text">Copy MD</span>
+          </button>
+          
+          <button 
+            id="btn-download-md" 
+            class="text-xs font-semibold border border-hairline bg-canvas hover:bg-canvas-soft rounded-md px-4 py-2 inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label="Download markdown file"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+            Download .md
+          </button>
+        </div>
+      </div>
+      
+      <!-- Side by Side Editor and Preview Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        
+        <!-- Left Side: Input Panel -->
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[500px]">
+          
+          <!-- Visual Editor Toolbar (Shown for Visual tab, hidden for HTML tab) -->
+          <div id="visual-toolbar" class="h-11 border-b border-hairline bg-canvas-soft px-3 flex items-center justify-between overflow-x-auto gap-2">
+            <div class="flex items-center gap-1">
+              <button onclick="document.execCommand('bold', false)" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors font-bold text-xs" title="Bold">B</button>
+              <button onclick="document.execCommand('italic', false)" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors italic text-xs" title="Italic">I</button>
+              <button onclick="document.execCommand('underline', false)" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors underline text-xs" title="Underline">U</button>
+              <span class="h-4 border-l border-hairline mx-1"></span>
+              <button onclick="document.execCommand('formatBlock', false, 'H1')" class="p-1.5 hover:bg-canvas-soft-2 rounded text-[10px] text-body hover:text-primary transition-colors font-bold" title="Heading 1">H1</button>
+              <button onclick="document.execCommand('formatBlock', false, 'H2')" class="p-1.5 hover:bg-canvas-soft-2 rounded text-[10px] text-body hover:text-primary transition-colors font-bold" title="Heading 2">H2</button>
+              <button onclick="document.execCommand('formatBlock', false, 'H3')" class="p-1.5 hover:bg-canvas-soft-2 rounded text-[10px] text-body hover:text-primary transition-colors font-bold" title="Heading 3">H3</button>
+              <span class="h-4 border-l border-hairline mx-1"></span>
+              <button id="btn-insert-link" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors text-xs inline-flex items-center" title="Insert Link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
+              </button>
+              <button onclick="document.execCommand('removeFormat', false)" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors text-xs" title="Remove Formatting">Tx</button>
+            </div>
+            <span class="text-[10px] font-mono text-mute uppercase select-none">WYSIWYG Visual Canvas</span>
+          </div>
+
+          <!-- HTML Code Panel Header (Shown for HTML tab, hidden for Visual tab) -->
+          <div id="html-toolbar" class="hidden h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
+            <span class="text-[10px] font-mono text-mute uppercase select-none">HTML Source Code Paste</span>
+            <span class="text-xs font-mono text-mute font-medium">Paste HTML or XML</span>
+          </div>
+          
+          <!-- Visual Editor Input -->
+          <div 
+            id="visual-editor" 
+            class="flex-grow p-5 min-h-[450px] overflow-y-auto focus:outline-none prose prose-sm max-w-none text-body bg-canvas prose-headings:text-primary prose-a:text-link prose-strong:text-primary prose-code:font-mono prose-code:bg-canvas-soft-2 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-primary prose-pre:text-canvas prose-pre:p-4 prose-pre:rounded-lg"
+            contenteditable="true"
+            aria-multiline="true"
+            role="textbox"
+            aria-label="Visual Rich Text Editor"
+          >
+            <h2>Try editing this content!</h2>
+            <p>You can write <strong>bold text</strong>, <em>italics</em>, insert links or headings. Copy and paste formatted articles directly from other websites or apps (like Word/Google Docs) into this visual pane, and see them instantly convert to Markdown on the right.</p>
+            <ul>
+              <li>List item number one</li>
+              <li>List item number two</li>
+            </ul>
+          </div>
+          
+          <!-- HTML Textarea Input -->
+          <textarea 
+            id="html-textarea" 
+            class="hidden flex-grow w-full min-h-[450px] p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none bg-canvas"
+            spellcheck="false"
+            placeholder="&lt;h1&gt;Example HTML Heading&lt;/h1&gt;&#10;&lt;p&gt;Paste raw html code here to convert to markdown...&lt;/p&gt;"
+          ></textarea>
+        </div>
+        
+        <!-- Right Side: Markdown Output -->
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[500px]">
+          <div class="h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Markdown Output</span>
+            <div class="flex items-center gap-2 text-xs text-mute font-mono">
+              <span id="char-count">Chars: 0</span>
+              <span>&bull;</span>
+              <span id="word-count">Words: 0</span>
+            </div>
+          </div>
+          
+          <div class="relative flex-grow flex">
+            <textarea 
+              id="markdown-textarea" 
+              class="w-full flex-grow p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none bg-canvas"
+              spellcheck="false"
+              placeholder="Real-time Markdown conversion will render here..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Option Controls Drawer -->
+      <div class="bg-canvas border border-hairline p-5 rounded-xl shadow-xs grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Heading Syntax</h4>
+          <select id="opt-heading" class="w-full text-sm border border-hairline bg-canvas p-2 rounded focus:ring-1 focus:ring-primary focus:outline-none">
+            <option value="atx">ATX style (# Header)</option>
+            <option value="setext">Setext style (Header ===)</option>
+          </select>
+        </div>
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Bullets Syntax</h4>
+          <select id="opt-bullet" class="w-full text-sm border border-hairline bg-canvas p-2 rounded focus:ring-1 focus:ring-primary focus:outline-none">
+            <option value="-">Hyphen (- list)</option>
+            <option value="*">Asterisk (* list)</option>
+            <option value="+">Plus (+ list)</option>
+          </select>
+        </div>
+        <div>
+          <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-mute mb-3">Link Style</h4>
+          <select id="opt-link" class="w-full text-sm border border-hairline bg-canvas p-2 rounded focus:ring-1 focus:ring-primary focus:outline-none">
+            <option value="inlined">Inlined [text](url)</option>
+            <option value="referenced">Referenced [text][1]</option>
+          </select>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Turndown execution client-side -->
+  <script>
+    import TurndownService from 'turndown';
+    import DOMPurify from 'dompurify';
+
+    // DOM Elements
+    const tabVisual = document.getElementById('tab-btn-visual');
+    const tabHtml = document.getElementById('tab-btn-html');
+    
+    const visualToolbar = document.getElementById('visual-toolbar');
+    const htmlToolbar = document.getElementById('html-toolbar');
+    
+    const visualEditor = document.getElementById('visual-editor');
+    const htmlTextarea = document.getElementById('html-textarea');
+    const markdownTextarea = document.getElementById('markdown-textarea') as HTMLTextAreaElement;
+    
+    const btnClear = document.getElementById('btn-clear');
+    const btnCopyMd = document.getElementById('btn-copy-md');
+    const copyBtnText = document.getElementById('copy-btn-text');
+    const btnDownloadMd = document.getElementById('btn-download-md');
+    
+    const charCount = document.getElementById('char-count');
+    const wordCount = document.getElementById('word-count');
+    
+    const optHeading = document.getElementById('opt-heading') as HTMLSelectElement;
+    const optBullet = document.getElementById('opt-bullet') as HTMLSelectElement;
+    const optLink = document.getElementById('opt-link') as HTMLSelectElement;
+    const btnInsertLink = document.getElementById('btn-insert-link');
+
+    let currentInputMode = 'visual'; // 'visual' or 'html'
+
+    // Initialize TurndownService config
+    function getTurndownInstance() {
+      const headingStyle = optHeading.value as 'atx' | 'setext';
+      const bullet = optBullet.value as '-' | '*' | '+';
+      const linkStyle = optLink.value as 'inlined' | 'referenced';
+      
+      const config = {
+        headingStyle: headingStyle,
+        codeBlockStyle: 'fenced' as const,
+        bullet: bullet,
+        linkStyle: linkStyle,
+        emDelimiter: '*' as const,
+        strongDelimiter: '**' as const
+      };
+      
+      return new TurndownService(config);
+    }
+
+    // Convert function trigger
+    function sanitize(html) {
+      return DOMPurify.sanitize(html);
+    }
+
+    function runConversion() {
+      const turndown = getTurndownInstance();
+      let inputHtml = "";
+      
+      if (currentInputMode === 'visual') {
+        inputHtml = visualEditor.innerHTML;
+      } else {
+        inputHtml = htmlTextarea.value;
+      }
+      
+      // Prevent crash on empty content
+      if (!inputHtml.trim()) {
+        markdownTextarea.value = "";
+        updateCounters();
+        return;
+      }
+      
+      try {
+        const safeHtml = sanitize(inputHtml);
+        const mdText = turndown.turndown(safeHtml);
+        markdownTextarea.value = mdText;
+        updateCounters();
+      } catch (err) {
+        console.error("Conversion error: ", err);
+      }
+    }
+
+    function updateCounters() {
+      const content = markdownTextarea.value;
+      charCount.textContent = "Chars: " + content.length;
+      wordCount.textContent = "Words: " + (content.trim() ? content.trim().split(/\s+/).length : 0);
+    }
+
+    // Input listeners
+    visualEditor.addEventListener('input', runConversion);
+    htmlTextarea.addEventListener('input', runConversion);
+    
+    // Setting listeners to re-convert on option change
+    optHeading.addEventListener('change', runConversion);
+    optBullet.addEventListener('change', runConversion);
+    optLink.addEventListener('change', runConversion);
+
+    // Tab Switches
+    tabVisual.addEventListener('click', () => {
+      if (currentInputMode === 'visual') return;
+      currentInputMode = 'visual';
+      
+      // Update Tab Styles
+      tabVisual.classList.add('bg-canvas', 'text-primary', 'shadow-xs');
+      tabVisual.classList.remove('text-mute', 'hover:text-primary');
+      tabHtml.classList.remove('bg-canvas', 'text-primary', 'shadow-xs');
+      tabHtml.classList.add('text-mute', 'hover:text-primary');
+      
+      // Update Panel visibility
+      visualToolbar.classList.remove('hidden');
+      visualEditor.classList.remove('hidden');
+      htmlToolbar.classList.add('hidden');
+      htmlTextarea.classList.add('hidden');
+      
+      // Sync HTML textarea content back to visual editor HTML first
+      if (htmlTextarea.value.trim()) {
+        visualEditor.innerHTML = sanitize(htmlTextarea.value);
+      }
+      runConversion();
+    });
+
+    tabHtml.addEventListener('click', () => {
+      if (currentInputMode === 'html') return;
+      currentInputMode = 'html';
+      
+      // Update Tab Styles
+      tabHtml.classList.add('bg-canvas', 'text-primary', 'shadow-xs');
+      tabHtml.classList.remove('text-mute', 'hover:text-primary');
+      tabVisual.classList.remove('bg-canvas', 'text-primary', 'shadow-xs');
+      tabVisual.classList.add('text-mute', 'hover:text-primary');
+      
+      // Update Panel visibility
+      htmlToolbar.classList.remove('hidden');
+      htmlTextarea.classList.remove('hidden');
+      visualToolbar.classList.add('hidden');
+      visualEditor.classList.add('hidden');
+      
+      // Sync visual editor HTML back to raw HTML textarea
+      htmlTextarea.value = visualEditor.innerHTML;
+      runConversion();
+    });
+
+    // Formatting button utility links helper
+    btnInsertLink?.addEventListener('click', () => {
+      const url = prompt("Enter link URL:", "https://");
+      if (url) {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          const selectedText = range.toString();
+          if (selectedText) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.textContent = selectedText;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            range.deleteContents();
+            range.insertNode(link);
+          } else {
+            visualEditor.focus();
+            const link = document.createElement('a');
+            link.href = url;
+            link.textContent = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            range.insertNode(link);
+            range.collapse(false);
+          }
+          runConversion();
+        }
+      }
+    });
+
+    // Clear Button
+    btnClear.addEventListener('click', () => {
+      if (confirm("Clear all editor fields?")) {
+        visualEditor.innerHTML = "";
+        htmlTextarea.value = "";
+        markdownTextarea.value = "";
+        updateCounters();
+      }
+    });
+
+    // Copy to clipboard
+    btnCopyMd.addEventListener('click', () => {
+      const content = markdownTextarea.value;
+      navigator.clipboard.writeText(content).then(() => {
+        copyBtnText.textContent = "Copied!";
+        btnCopyMd.classList.remove('bg-primary');
+        btnCopyMd.classList.add('bg-cyan-deep', 'border-cyan-deep');
+        
+        setTimeout(() => {
+          copyBtnText.textContent = "Copy MD";
+          btnCopyMd.classList.add('bg-primary');
+          btnCopyMd.classList.remove('bg-cyan-deep', 'border-cyan-deep');
+        }, 1500);
+      }).catch(err => {
+        alert("Copy failed. Please copy manually.");
+      });
+    });
+
+    // Download MD File
+    btnDownloadMd.addEventListener('click', () => {
+      const content = markdownTextarea.value;
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'converted-text.md');
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+
+    // Initial Trigger
+    runConversion();
+  </script>
+</Layout>
