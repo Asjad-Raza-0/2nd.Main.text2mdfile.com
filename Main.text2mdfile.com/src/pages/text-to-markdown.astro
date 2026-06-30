@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout activeTab="text">
   <!-- Hero Section -->
-  <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-8 sm:pb-12 relative z-10">
     <div class="flex flex-col items-center text-center">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-canvas-soft-2 border border-hairline rounded-full text-xs font-mono text-mute mb-6 select-none">
         <span class="text-primary font-medium font-mono">WYSIWYG & HTML Converter</span>
@@ -25,7 +25,7 @@ import Layout from '../layouts/Layout.astro';
   </section>
 
   <!-- Converter Main Area -->
-  <section class="max-w-6xl mx-auto px-6 pb-24 relative z-10" id="converter-section">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-24 relative z-10" id="converter-section">
     <div class="space-y-6">
       
       <!-- Top Actions Header -->
@@ -84,10 +84,10 @@ import Layout from '../layouts/Layout.astro';
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         
         <!-- Left Side: Input Panel -->
-        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[500px]">
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
           
           <!-- Visual Editor Toolbar (Shown for Visual tab, hidden for HTML tab) -->
-          <div id="visual-toolbar" class="h-11 border-b border-hairline bg-canvas-soft px-3 flex items-center justify-between overflow-x-auto gap-2">
+          <div id="visual-toolbar" class="h-11 border-b border-hairline bg-canvas-soft px-2 sm:px-3 flex items-center justify-between overflow-x-auto gap-1 sm:gap-2">
             <div class="flex items-center gap-1">
               <button onclick="document.execCommand('bold', false)" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors font-bold text-xs" title="Bold">B</button>
               <button onclick="document.execCommand('italic', false)" class="p-1.5 hover:bg-canvas-soft-2 rounded text-body hover:text-primary transition-colors italic text-xs" title="Italic">I</button>
@@ -114,7 +114,7 @@ import Layout from '../layouts/Layout.astro';
           <!-- Visual Editor Input -->
           <div 
             id="visual-editor" 
-            class="flex-grow p-5 min-h-[450px] overflow-y-auto focus:outline-none prose prose-sm max-w-none text-body bg-canvas prose-headings:text-primary prose-a:text-link prose-strong:text-primary prose-code:font-mono prose-code:bg-canvas-soft-2 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-primary prose-pre:text-canvas prose-pre:p-4 prose-pre:rounded-lg"
+            class="flex-grow p-4 sm:p-5 min-h-[250px] sm:min-h-[350px] lg:min-h-[450px] overflow-y-auto focus:outline-none prose prose-sm max-w-none text-body bg-canvas prose-headings:text-primary prose-a:text-link prose-strong:text-primary prose-code:font-mono prose-code:bg-canvas-soft-2 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-primary prose-pre:text-canvas prose-pre:p-4 prose-pre:rounded-lg"
             contenteditable="true"
             aria-multiline="true"
             role="textbox"
@@ -131,14 +131,14 @@ import Layout from '../layouts/Layout.astro';
           <!-- HTML Textarea Input -->
           <textarea 
             id="html-textarea" 
-            class="hidden flex-grow w-full min-h-[450px] p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none bg-canvas"
+            class="hidden flex-grow w-full min-h-[250px] sm:min-h-[350px] lg:min-h-[450px] p-4 sm:p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none bg-canvas"
             spellcheck="false"
             placeholder="&lt;h1&gt;Example HTML Heading&lt;/h1&gt;&#10;&lt;p&gt;Paste raw html code here to convert to markdown...&lt;/p&gt;"
           ></textarea>
         </div>
         
         <!-- Right Side: Markdown Output -->
-        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[500px]">
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
           <div class="h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
             <span class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Markdown Output</span>
             <div class="flex items-center gap-2 text-xs text-mute font-mono">
@@ -151,7 +151,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="relative flex-grow flex">
             <textarea 
               id="markdown-textarea" 
-              class="w-full flex-grow p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none bg-canvas"
+              class="w-full flex-grow p-4 sm:p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none bg-canvas"
               spellcheck="false"
               placeholder="Real-time Markdown conversion will render here..."
             ></textarea>
@@ -202,7 +202,7 @@ import Layout from '../layouts/Layout.astro';
     
     const visualEditor = document.getElementById('visual-editor');
     const htmlTextarea = document.getElementById('html-textarea');
-    const markdownTextarea = document.getElementById('markdown-textarea') as HTMLTextAreaElement;
+    const markdownTextarea = document.getElementById('markdown-textarea');
     
     const btnClear = document.getElementById('btn-clear');
     const btnCopyMd = document.getElementById('btn-copy-md');
@@ -212,26 +212,26 @@ import Layout from '../layouts/Layout.astro';
     const charCount = document.getElementById('char-count');
     const wordCount = document.getElementById('word-count');
     
-    const optHeading = document.getElementById('opt-heading') as HTMLSelectElement;
-    const optBullet = document.getElementById('opt-bullet') as HTMLSelectElement;
-    const optLink = document.getElementById('opt-link') as HTMLSelectElement;
+    const optHeading = document.getElementById('opt-heading');
+    const optBullet = document.getElementById('opt-bullet');
+    const optLink = document.getElementById('opt-link');
     const btnInsertLink = document.getElementById('btn-insert-link');
 
     let currentInputMode = 'visual'; // 'visual' or 'html'
 
     // Initialize TurndownService config
     function getTurndownInstance() {
-      const headingStyle = optHeading.value as 'atx' | 'setext';
-      const bullet = optBullet.value as '-' | '*' | '+';
-      const linkStyle = optLink.value as 'inlined' | 'referenced';
+      const headingStyle = optHeading.value;
+      const bullet = optBullet.value;
+      const linkStyle = optLink.value;
       
       const config = {
         headingStyle: headingStyle,
-        codeBlockStyle: 'fenced' as const,
+        codeBlockStyle: 'fenced',
         bullet: bullet,
         linkStyle: linkStyle,
-        emDelimiter: '*' as const,
-        strongDelimiter: '**' as const
+        emDelimiter: '*',
+        strongDelimiter: '**'
       };
       
       return new TurndownService(config);

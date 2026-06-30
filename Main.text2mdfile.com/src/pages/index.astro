@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout activeTab="pdf">
   <!-- Hero Section -->
-  <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-8 sm:pb-12 relative z-10">
     <div class="flex flex-col items-center text-center">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-canvas-soft-2 border border-hairline rounded-full text-xs font-mono text-mute mb-6 select-none">
         <span class="text-primary font-medium">convert2md v1.0.0</span>
@@ -24,14 +24,14 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <!-- Converter Main Area -->
-  <section class="max-w-6xl mx-auto px-6 pb-24 relative z-10" id="converter-section">
+    <!-- Converter Main Area -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-24 relative z-10" id="converter-section">
     
     <!-- Upload Dropzone (Visible by default) -->
     <div id="dropzone-container" class="max-w-3xl mx-auto">
       <div 
         id="dropzone" 
-        class="border-2 border-dashed border-hairline-strong/60 hover:border-primary/50 bg-canvas rounded-xl p-16 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center text-center shadow-xs relative group focus-within:ring-2 focus-within:ring-primary"
+        class="border-2 border-dashed border-hairline-strong/60 hover:border-primary/50 bg-canvas rounded-xl p-8 sm:p-12 md:p-16 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center text-center shadow-xs relative group focus-within:ring-2 focus-within:ring-primary"
       >
         <input 
           type="file" 
@@ -102,7 +102,7 @@ import Layout from '../layouts/Layout.astro';
     <div id="workspace-container" class="hidden space-y-6">
       
       <!-- Top Actions Header -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-canvas border border-hairline p-4 rounded-xl shadow-xs">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 bg-canvas border border-hairline p-3 sm:p-4 rounded-xl shadow-xs">
         <div class="min-w-0">
           <div class="flex items-center gap-2">
             <span class="inline-block px-2 py-0.5 bg-canvas-soft-2 border border-hairline text-[10px] font-mono rounded text-mute font-semibold">PDF</span>
@@ -149,7 +149,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         
         <!-- Left Side: Markdown Editor -->
-        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[550px]">
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[300px] sm:min-h-[450px] lg:min-h-[550px]">
           <div class="h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
             <span class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Markdown Source</span>
             <div class="flex items-center gap-2 text-xs text-mute font-mono">
@@ -162,7 +162,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="relative flex-grow flex">
             <textarea 
               id="markdown-textarea" 
-              class="w-full min-h-[500px] flex-grow p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none"
+              class="w-full min-h-[250px] sm:min-h-[400px] lg:min-h-[500px] flex-grow p-4 sm:p-5 border-0 focus:ring-0 focus:outline-none font-mono text-sm leading-relaxed text-primary resize-none"
               spellcheck="false"
               placeholder="Your extracted markdown will appear here. You can edit this directly..."
             ></textarea>
@@ -170,7 +170,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
         
         <!-- Right Side: Live HTML/Visual Preview -->
-        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[550px]">
+        <div class="bg-canvas border border-hairline rounded-xl shadow-xs overflow-hidden flex flex-col min-h-[300px] sm:min-h-[450px] lg:min-h-[550px]">
           <div class="h-11 border-b border-hairline bg-canvas-soft px-4 flex items-center justify-between">
             <span class="text-xs font-mono font-semibold uppercase tracking-wider text-mute">Rendered HTML Preview</span>
             <div class="flex items-center gap-1.5">
@@ -250,7 +250,7 @@ import Layout from '../layouts/Layout.astro';
   </section>
 
   <!-- Competitor Comparison & Marketing Section -->
-  <section class="border-t border-hairline bg-canvas relative z-10 py-20 px-6">
+  <section class="border-t border-hairline bg-canvas relative z-10 py-12 sm:py-20 px-4 sm:px-6">
     <div class="max-w-4xl mx-auto">
       <h2 class="font-geist text-3xl font-semibold tracking-tight text-primary mb-4 text-center">
         Why choose convert2md.com?
@@ -294,8 +294,8 @@ import Layout from '../layouts/Layout.astro';
 
       <!-- Table Comparison (SEO Optimization) -->
       <h3 class="text-base font-semibold text-primary mb-6 text-center">Feature-by-Feature Comparison</h3>
-      <div class="border border-hairline rounded-lg overflow-hidden bg-canvas">
-        <table class="w-full border-collapse text-left text-sm" role="table">
+      <div class="border border-hairline rounded-lg overflow-hidden bg-canvas overflow-x-auto">
+        <table class="w-full border-collapse text-left text-xs sm:text-sm min-w-[480px] sm:min-w-0" role="table">
           <thead>
             <tr class="bg-canvas-soft border-b border-hairline text-xs font-mono uppercase text-mute">
               <th class="p-3.5 font-semibold">Features</th>
@@ -341,17 +341,38 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <!-- Load PDF.js and Marked from CDNs inside client script -->
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-ff5a940921b04eeafdbe37ffcfd966bbf7825186e93938128e6a5b310675fc2b57daffd670020aa91bfe5350d4086e9e" crossorigin="anonymous"></script>
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.5/marked.min.js" integrity="sha384-614500c97e0b8658ca9a6ebecff92daf84dc74d85333dc9243cba3f06ba88df352541db658e95106f111bd2ff4bf4e11" crossorigin="anonymous"></script>
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" integrity="sha384-784bb90938f7a86beef4f749b92f98964362eddd97c5044e00560eaf9f7380e6ed95cbb1d5a7b5225deeee3bdd0925ae" crossorigin="anonymous"></script>
+  <script is:inline>
+    // Load PDF.js dynamically to avoid SRI/CDN loading failures
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    (async function loadDeps() {
+      try {
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.5/marked.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js');
+      } catch (e) {
+        console.error('Failed to load dependency:', e);
+      }
+    })();
+  </script>
   
   <script is:inline>
-    // Configure PDF.js worker
-    if (typeof pdfjsLib !== 'undefined') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      // Note: PDF.js worker integrity is verified via fetch + SRI when loaded as a worker
-    }
+    // Wait for pdfjsLib to be available, then configure worker
+    (function waitForPdfjs() {
+      if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        return;
+      }
+      setTimeout(waitForPdfjs, 100);
+    })();
 
     // DOM Elements
     const dropzone = document.getElementById('dropzone');
