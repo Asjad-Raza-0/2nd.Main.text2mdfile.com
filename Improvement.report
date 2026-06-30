@@ -1,0 +1,116 @@
+# Main.convert2mdfile.com Deep Review & Improvement Report
+
+## TL;DR
+
+**Winner: Main.convert2mdfile.com**
+
+This project is production-ready, privacy-first, fully client-side,
+SEO-friendly, and built on mature libraries. The recommendations below
+focus only on improving this project further.
+
+## `Main.text2mdfile.com` (winner) --- errors & weaknesses found
+
+Even the winner has real bugs. These are the priority fixes.
+
+### Critical
+
+-   **XSS via unsanitized preview.** Both converters do
+    `previewVisual.innerHTML = marked.parse(...)` and the HTML tool
+    feeds a `contenteditable`'s `innerHTML` straight into Turndown.
+    Pasted/edited content can contain
+    `<img onerror=...>`/`<script>`-style payloads that execute in the
+    preview. **Sanitize with DOMPurify** before any `innerHTML`.
+
+### High
+
+-   **Full re-parse on every option toggle.** In `index.astro`,
+    `opt-page-dividers`, `opt-header-detect`, and `opt-preserve-breaks`
+    all call `runPdfConversion()`, which re-runs the entire PDF parse.
+    For large PDFs this is very expensive.
+-   **Option toggles destroy user edits.** Re-parsing overwrites
+    `markdownTextarea.value`, so any manual edits to the Markdown are
+    silently lost when a checkbox is toggled.
+-   **Heavy parsing on the main thread.** The line/font-assembly loop
+    runs on the UI thread (only PDF.js's internal worker is offloaded).
+    A real 100MB PDF --- which the UI explicitly advertises --- will
+    freeze the tab. The *"Max 100MB"* limit is **not enforced in code**.
+-   **No bold/italic/link/table extraction from PDFs.** PDF.js exposes
+    `fontName` (bold/italic) and positions; none of it is used. Tables
+    collapse to plain lines (this is exactly where `1.Convert2md`'s
+    engine is stronger).
+
+### Medium / hygiene
+
+-   **CDN libs without SRI.** PDF.js and Marked load from `cdnjs` with
+    no `integrity` hashes → supply-chain risk and offline failure. Pin +
+    add SRI, or self-host.
+-   **Committed junk:** `test.pdf` and a binary `dev_server.log` are in
+    the repo; add them to `.gitignore`.
+-   **Deprecated API:** the HTML tool uses
+    `document.execCommand('createLink', ...)`, which is deprecated.
+-   **Heading heuristic is brittle** (font-size deltas of +1.8/+3.8/+7)
+    and only emits H1--H3; no H4--H6.
+-   Package name `1.text2mdfile.com` vs `site: convert2md.com` is
+    inconsistent; README is still the Astro starter.
+-   No OCR → scanned/image-only PDFs return empty (acknowledged in UI,
+    but it's a real gap).
+
+------------------------------------------------------------------------
+
+## Roadmap for the winner --- features & improvements
+
+### 1. Fix the bugs above first (in priority order)
+
+1.  Add **DOMPurify** sanitization to all preview rendering.
+2.  **Cache parsed PDF text-items**; on option change, **re-render from
+    cache** instead of re-parsing, and stop clobbering user edits (apply
+    options non-destructively, or add an explicit "Re-generate" button).
+3.  Move PDF text-assembly into a **Web Worker**; **enforce the size
+    limit** and warn/stream for big files.
+4.  Add **SRI hashes** / pin versions / self-host CDN libs.
+5.  Remove `test.pdf` + `dev_server.log`; write a real README + add a
+    LICENSE.
+
+### 2. Close the capability gap (steal from `1.Convert2md`)
+
+-   **Add a real hosted PDF backend** (serverless function / container)
+    running the `pdfplumber` engine from the other repo, as an
+    *optional* "high-accuracy / table mode" toggle --- while keeping
+    client-side as the private default. This literally merges both
+    projects' strengths.
+-   **OCR for scanned PDFs** via Tesseract.js (client-side) or a server
+    OCR step.
+-   **Real table reconstruction** and **bold/italic/link detection**
+    using PDF.js `fontName` + positional clustering.
+
+### 3. New features
+
+-   **Batch conversion**: multiple files at once, ZIP download.
+-   **File upload (.html/.txt/.docx)** and drag-drop for the Text/HTML
+    tool.
+-   **Password-protected PDF support** (PDF.js password callback).
+-   **Export options**: YAML front-matter, GFM tables toggle, code-fence
+    language hint, line-ending choice.
+-   **Persist settings** + last session in `localStorage`.
+-   **Markdown linting/auto-clean** pass on output.
+
+### 4. Quality, performance & polish
+
+-   Unit tests for the converters; add **CI** running `astro check`,
+    type-check, and lint.
+-   Accessibility pass: ARIA labels, focus states, keyboard support on
+    dropzones.
+-   **PWA / offline** support (great fit for a privacy-first, no-upload
+    tool).
+-   SEO: generate a **sitemap**, add **JSON-LD structured data** and OG
+    images; you already have canonical + robots.txt.
+-   i18n for reach.
+
+------------------------------------------------------------------------
+
+## One-line verdict
+
+`Main.text2mdfile.com` is the product; `1.Convert2md` is a better engine
+in the wrong package. **Ship the winner, fix its XSS + re-parse bugs,
+then absorb the other repo's Python engine as an optional hosted
+"accuracy mode."**
